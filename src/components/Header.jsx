@@ -1,208 +1,197 @@
 
-import { useState } from "react";
+import React, { useState } from "react";
 import {
-  House,
   Search,
   UserRound,
   ShoppingBag,
   Menu,
   X,
+  Phone,
 } from "lucide-react";
 
-export default function Header() {
-  const [search, setSearch] = useState("");
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+const categories = [
+  "All Products",
+  "Kitchen",
+  "Cleaning",
+  "Bathroom",
+  "Laundry",
+  "Home Organization",
+  "Offers",
+];
 
-  const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "All Products", href: "/products" },
-    { name: "Kitchen", href: "/category/kitchen" },
-    { name: "Cleaning", href: "/category/cleaning" },
-    { name: "Bathroom", href: "/category/bathroom" },
-    { name: "Laundry", href: "/category/laundry" },
-    {
-      name: "Home Organization",
-      href: "/category/home-organization",
-    },
-    { name: "Home Decor", href: "/category/home-decor" },
-    { name: "Offers", href: "/offers" },
-    { name: "Services", href: "/services" },
-    { name: "Contact", href: "/contact" },
-  ];
+export default function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [search, setSearch] = useState("");
 
   const handleSearch = (e) => {
     e.preventDefault();
 
-    if (search.trim()) {
-      window.location.href = `/products?search=${encodeURIComponent(
-        search.trim()
-      )}`;
-    }
+    const query = search.trim();
+    if (!query) return;
+
+    window.location.href = `/?search=${encodeURIComponent(query)}#products`;
+  };
+
+  const getLink = (category) => {
+    if (category === "Offers") return "/#offers";
+    if (category === "All Products") return "/#products";
+
+    return `/?category=${encodeURIComponent(category)}#products`;
   };
 
   return (
-    <header className="w-full bg-white text-black">
-      {/* Announcement Bar */}
-      <div className="flex min-h-[11px] items-center justify-center bg-[#88001f] px-2 py-1 text-center text-sm text-white sm:text-base md:text-[15px]">
-        Welcome to Castra Households | Quality Essentials for Your Home
+    <header className="w-full bg-white text-neutral-900">
+      {/* Announcement bar */}
+      <div className="bg-[#74152b] px-3 py-2 text-center text-xs text-white sm:text-sm">
+        Discover quality essentials for your home at Castra Households.
       </div>
-      <div className="border-b border-gray-200">
-        <div className="mx-auto flex min-h-[100px] max-w-[1600px] items-center justify-between gap-3 px-2 py-1 sm:px-4 lg:px-4">
-        
-          <a
-            href="/"
-            className="flex shrink-0 items-center gap-2"
-            aria-label="Castra Households home"
-          >
-            <span className="flex h-[45px] w-[45px] items-center justify-center rounded-[11px] bg-[#88001f] text-white">
-              <House size={31} strokeWidth={2} />
-            </span>
 
-            <span className="hidden whitespace-nowrap text-[15px] font-bold tracking-tight sm:block lg:text-[15px]">
-              Castra Households
-            </span>
-          </a>
+      {/* Main header */}
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-6 lg:gap-8">
+        <a href="/" className="shrink-0">
+          <span className="block text-xl font-bold tracking-tight sm:text-2xl">
+            Castra
+          </span>
+          <span className="block text-[10px] uppercase tracking-[0.25em] text-neutral-500">
+            Households
+          </span>
+        </a>
 
-          {/* Search Bar */}
-          <form
-            onSubmit={handleSearch}
-            className="hidden h-[35px] min-w-0 max-w-[840px] flex-1 items-center gap-4 rounded-xl border border-[#dedede] bg-[#f9f8f7] px-5 md:flex lg:mx-3"
-          >
-            <Search
-              size={20}
-              className="shrink-0 text-black"
-            />
-
-            <input
-              type="search"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search products, brands and household essentials..."
-              aria-label="Search products"
-              className="min-w-0 flex-1 bg-transparent text-[18px] outline-none placeholder:text-[#98a0af]"
-            />
-
-            <button
-              type="submit"
-              className="shrink-0 font-bold text-[#88001f] transition-colors hover:text-[#590016]"
-            >
-              Search
-            </button>
-          </form>
-
-          {/* Account and Cart */}
-          <div className="flex shrink-0 items-center gap-3 sm:gap-5">
-            <a
-              href="/signin"
-              className="flex items-center gap-2 text-[10px] font-semibold hover:text-[#88001f] sm:text-[15px]"
-            >
-              <UserRound size={25} strokeWidth={2} />
-              <span className="hidden sm:inline">Sign In</span>
-            </a>
-
-            <a
-              href="/cart"
-              className="relative flex items-center"
-              aria-label="Shopping cart, 0 items"
-            >
-              <ShoppingBag size={30} strokeWidth={2} />
-              <span className="ml-2 flex h-[29px] min-w-[29px] items-center justify-center rounded-full bg-[#88001f] px-2 text-sm font-semibold text-white">
-                0
-              </span>
-            </a>
-
-            {/* Mobile Menu Button */}
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="rounded-md p-1 hover:bg-gray-100 md:hidden"
-              aria-label="Toggle navigation menu"
-              aria-expanded={mobileMenuOpen}
-            >
-              {mobileMenuOpen ? (
-                <X size={27} />
-              ) : (
-                <Menu size={27} />
-              )}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Search */}
+        {/* Search */}
         <form
           onSubmit={handleSearch}
-          className="flex items-center gap-3 px-4 pb-5 md:hidden"
+          className="hidden min-w-0 max-w-xl flex-1 md:flex"
         >
-          <div className="flex h-12 flex-1 items-center gap-3 rounded-lg border border-gray-300 bg-[#f9f8f7] px-3">
-            <Search size={22} className="shrink-0" />
-
-            <input
-              type="search"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search household essentials..."
-              aria-label="Search products"
-              className="w-full min-w-0 bg-transparent text-sm outline-none"
-            />
-          </div>
-
+          <input
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search household products..."
+            aria-label="Search products"
+            className="min-w-0 flex-1 border border-neutral-300 px-4 py-3 text-sm outline-none focus:border-[#74152b]"
+          />
           <button
             type="submit"
-            className="rounded-lg bg-[#88001f] px-4 py-3 text-sm font-semibold text-white"
+            aria-label="Search"
+            className="bg-[#74152b] px-5 text-white transition hover:bg-[#561020]"
           >
-            Search
+            <Search size={19} />
           </button>
         </form>
+
+        {/* Account and cart */}
+        <div className="flex items-center gap-4 sm:gap-5">
+          <a
+            href="/sign-in"
+            className="hidden items-center gap-2 text-sm hover:text-[#74152b] sm:flex"
+          >
+            <UserRound size={20} />
+            <span>Sign In</span>
+          </a>
+
+          <a
+            href="/cart"
+            aria-label="Shopping cart"
+            className="flex items-center gap-2 hover:text-[#74152b]"
+          >
+            <ShoppingBag size={22} />
+            <span className="hidden text-sm sm:inline">Cart</span>
+          </a>
+
+          <button
+            type="button"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            className="p-1 md:hidden"
+          >
+            {menuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
-      {/* Desktop Navigation */}
-      <nav
-        aria-label="Main navigation"
-        className="hidden border-b border-gray-200 md:block"
+      {/* Mobile search */}
+      <form
+        onSubmit={handleSearch}
+        className="flex px-4 pb-4 md:hidden"
       >
-        <div className="mx-auto flex max-w-full items-center gap-3  px-9 lg:gap-6">
-          {navLinks.map((link) => {
-            const isOffer = link.name === "Offers";
+        <input
+          type="search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search household products..."
+          aria-label="Search products"
+          className="min-w-0 flex-1 border border-neutral-300 px-3 py-2.5 text-sm outline-none focus:border-[#74152b]"
+        />
+        <button
+          type="submit"
+          aria-label="Search"
+          className="bg-[#74152b] px-4 text-white"
+        >
+          <Search size={18} />
+        </button>
+      </form>
 
-            return (
-              <a
-                key={link.name}
-                href={link.href}
-                className={`relative flex h-[72px] shrink-0 items-center text-[16px] font-semibold transition-colors lg:text-[19px] ${
-                  isOffer
-                    ? "text-[#88001f] after:absolute after:bottom-0 after:left-0 after:h-[3px] after:w-full after:bg-[#88001f]"
-                    : "text-black hover:text-[#88001f]"
-                }`}
-              >
-                {link.name}
-              </a>
-            );
-          })}
+      {/* Desktop navigation */}
+      <nav className="hidden border-y border-neutral-200 md:block">
+        <div className="mx-auto flex max-w-9xl items-center justify-center gap-7 px-9 lg:gap-12">
+          {categories.map((category) => (
+            <a
+              key={category}
+              href={getLink(category)}
+              className={`whitespace-nowrap py-4 text-sm transition hover:text-[#74152b] ${
+                category === "Offers"
+                  ? "font-bold text-[#74152b]"
+                  : "text-neutral-700"
+              }`}
+            >
+              {category}
+            </a>
+          ))}
+
+          <a
+            href="/#contact"
+            className="whitespace-nowrap py-4 text-sm text-neutral-700 hover:text-[#74152b]"
+          >
+            Contact
+          </a>
         </div>
       </nav>
 
-      {/* Mobile Navigation */}
-      {mobileMenuOpen && (
-        <nav
-          aria-label="Mobile navigation"
-          className="border-b border-gray-200 bg-white shadow-md md:hidden"
-        >
-          <div className="flex flex-col px-4 py-2">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className={`border-b border-gray-100 px-3 py-3 font-semibold transition-colors last:border-0 ${
-                  link.name === "Offers"
-                    ? "text-[#88001f]"
-                    : "text-gray-800 hover:text-[#88001f]"
-                }`}
-              >
-                {link.name}
-              </a>
-            ))}
-          </div>
+      {/* Mobile navigation */}
+      {menuOpen && (
+        <nav className="border-y border-neutral-200 bg-white px-4 py-3 md:hidden">
+          {categories.map((category) => (
+            <a
+              key={category}
+              href={getLink(category)}
+              onClick={() => setMenuOpen(false)}
+              className={`block border-b border-neutral-100 py-3 text-sm ${
+                category === "Offers"
+                  ? "font-bold text-[#74152b]"
+                  : "text-neutral-700"
+              }`}
+            >
+              {category}
+            </a>
+          ))}
+
+          <a
+            href="/sign-in"
+            className="flex items-center gap-2 py-3 text-sm"
+          >
+            <UserRound size={17} />
+            Sign In
+          </a>
+
+          <a
+            href="/#contact"
+            onClick={() => setMenuOpen(false)}
+            className="flex items-center gap-2 py-3 text-sm"
+          >
+            <Phone size={17} />
+            Contact Us
+          </a>
         </nav>
       )}
     </header>
